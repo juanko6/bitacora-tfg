@@ -1,0 +1,28 @@
+{
+  "name": "bitacora-tfg",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Bitácora para llevar un TFG, TFM o tesis: tareas, decisiones, uso de IA, reuniones, diario, fuentes y calendario.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint . && prettier --check .",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:api": "python3 -m unittest discover -s server -p 'test_*.py'",
+    "api": "python3 server/api.py",
+    "deploy": "bash deploy/publish.sh"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.9.1",
+    "globals": "^16.0.0",
+    "jsdom": "^31.0.1",
+    "prettier": "^3.9.6",
+    "vite": "^8.2.2",
+    "vitest": "^4.1.11"
+  }
+}

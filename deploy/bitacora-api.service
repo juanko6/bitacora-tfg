@@ -1,0 +1,36 @@
+# /etc/systemd/system/bitacora-api.service
+# Lo instala deploy/setup-server.sh, que sustituye __PORT__ y __PUBLIC_READ__.
+
+[Unit]
+Description=API de la Bitácora de TFG
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /opt/bitacora/api.py
+# La clave de edición vive en este fichero, propiedad de root y con permisos
+# 600. systemd lo lee antes de soltar privilegios, así que el proceso de la
+# API no necesita poder abrirlo.
+EnvironmentFile=/etc/bitacora/env
+Environment=BITACORA_DB=/var/lib/bitacora/bitacora.db
+Environment=BITACORA_HOST=127.0.0.1
+Environment=BITACORA_PORT=__PORT__
+Environment=BITACORA_PUBLIC_READ=__PUBLIC_READ__
+Environment=PYTHONUNBUFFERED=1
+
+# Usuario efímero sin privilegios. systemd crea /var/lib/bitacora y se lo
+# asigna; es lo único en lo que el proceso puede escribir.
+DynamicUser=yes
+StateDirectory=bitacora
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+MemoryMax=128M
+
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

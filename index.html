@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bitácora de TFG</title>
+    <meta
+      name="description"
+      content="Bitácora para llevar un TFG, TFM o tesis: tareas, decisiones, uso de IA, reuniones, diario, fuentes y calendario."
+    />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600&display=swap"
+    />
+  </head>
+  <body>
+    <header class="band">
+      <div class="wrap">
+        <span class="eyebrow" id="h-eyebrow"
+          >Bitácora de trabajo académico</span
+        >
+        <h1 id="h-title">Bitácora de TFG</h1>
+        <div class="band-meta" id="h-meta"></div>
+      </div>
+    </header>
+    <nav class="tabs" aria-label="Secciones">
+      <div class="wrap" id="tabs"></div>
+    </nav>
+    <main><div class="wrap" id="view"></div></main>
+
+    <dialog id="dlg" aria-labelledby="dlg-title">
+      <form class="dlg" id="dlg-form" novalidate>
+        <div class="dlg-head"><h2 id="dlg-title"></h2></div>
+        <div class="dlg-body" id="dlg-body"></div>
+        <div class="dlg-foot">
+          <button type="button" class="btn" id="dlg-cancel">Cancelar</button>
+          <button type="submit" class="btn primary" id="dlg-save">
+            Guardar
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

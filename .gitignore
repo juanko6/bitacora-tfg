@@ -1,0 +1,30 @@
+# dependencias
+node_modules/
+
+# build
+dist/
+
+# logs
+*.log
+
+# editores / SO
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.claude/
+
+# entorno: nunca se versiona. Los ejemplos sí (.env.example, deploy.env.example).
+.env
+.env.*
+!.env.example
+deploy/deploy.env
+
+# datos de la API en local
+*.db
+*.db-wal
+*.db-shm
+__pycache__/
+
+# copias de seguridad bajadas del servidor
+copias/
