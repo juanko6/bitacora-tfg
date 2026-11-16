@@ -12,14 +12,17 @@ Se puede usar tal cual, sin instalar nada en ningún servidor: los datos se guar
 |---|---|
 | **Resumen** | Fase del trabajo, lo que requiere tu atención, próximos plazos y la ficha del trabajo. |
 | **Tareas** | Tablero de tres columnas (por hacer, en curso, hecho) para tareas, decisiones por tomar y consultas. |
+| **Papers** | Los papers, TFG y tesis que se estudian: por qué interesa cada uno, qué aporta, método, resultados, limitaciones, qué se va a usar de él y dónde se cita. Con estado de lectura y relevancia. Es la base del estado del arte. |
 | **Decisiones** | Cada decisión con su motivo, las alternativas descartadas, sus consecuencias y si ya se la comunicaste al tutor. Es el "estudio de alternativas" que suelen valorar los tribunales. |
 | **Uso de IA** | Registro de cada uso de herramientas de IA: para qué, dónde quedó el resultado y qué revisaste tú. Es la materia prima de la declaración de uso de IA que cada vez más reglamentos exigen como anexo. |
 | **Reuniones** | Lo que se habló con el tutor y las acciones que quedaron. |
 | **Diario** | Notas de trabajo: avances, bloqueos e ideas. |
-| **Fuentes** | Artículos, libros y documentación, con su referencia y el apartado de la memoria donde se usan. |
+| **Recursos** | Documentación, herramientas y normativa: lo que no es un paper, con el apartado de la memoria donde se usa. |
 | **Calendario** | Los plazos oficiales de tu centro, con cuenta atrás. |
 
-Decisiones, uso de IA, reuniones, diario y fuentes se copian a Markdown con un botón, para pegarlos en la memoria o enviárselos al tutor.
+Papers, decisiones, uso de IA, reuniones, diario y recursos se copian a Markdown con un botón, para pegarlos en la memoria o enviárselos al tutor.
+
+Los formularios se abren en un panel que entra desde la derecha, y el tema es oscuro siempre.
 
 La estructura combina dos ideas: la bitácora de decisiones y de uso de IA que pide la normativa de algunos centros, y las secciones de la [plantilla de tesis para Notion](https://santiagofs.com/plantilla-tesis) de Santiago Fernández Scagliusi (proceso, tareas, artículos, diario, recursos y reuniones).
 
@@ -92,7 +95,7 @@ npm run deploy
 
 ## Adaptarla
 
-- **Colores.** La banda de cabecera y el color de acento son dos variables al principio de [`src/styles.css`](src/styles.css): `--band` y `--accent`. Cámbialas por los de tu centro, en el bloque claro y en el oscuro.
+- **Colores.** La banda de cabecera y el color de acento son dos variables al principio de [`src/styles.css`](src/styles.css): `--band` y `--accent`. Cámbialas por los de tu centro. El tema es oscuro siempre; si prefieres uno claro, cambia el resto de variables de ese mismo bloque y `color-scheme`.
 - **Campos y secciones.** Todo lo que se guarda está descrito en [`src/schemas.js`](src/schemas.js). Añadir un campo ahí basta para que aparezca en el formulario, en la ficha y en la exportación a Markdown. Si añades una colección nueva, añádela también a `COLLECTIONS` en `server/api.py`.
 - **Fases del trabajo, categorías, tipos.** Son listas en el mismo fichero.
 - **Datos de ejemplo.** [`src/demo.js`](src/demo.js).

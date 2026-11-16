@@ -3,6 +3,7 @@ import { $, el } from "./dom.js";
 import {
   CATEGORIAS_DIARIO,
   ESTADOS,
+  ESTADOS_LECTURA,
   FASES_IA,
   PROCESO,
   SCHEMAS,
@@ -18,6 +19,10 @@ import {
   decSinComunicar,
   decSinMotivo,
   estadoFecha,
+  estadoPaper,
+  ordenPapers,
+  paperPorLeer,
+  paperSinInteres,
   fmtDate,
   fmtDateShort,
   hoyISO,
@@ -102,17 +107,39 @@ function abrirDialogo(titulo, cuerpo, onSubmit, etiqueta = "Guardar") {
   save.disabled = false;
   ui.onSubmit = onSubmit;
   const d = $("#dlg");
-  if (d.showModal) d.showModal();
-  else d.setAttribute("open", "");
+  // Si se reabre mientras aún se está cerrando, se cancela el cierre.
+  clearTimeout(cierrePendiente);
+  d.classList.remove("closing");
+  if (!d.hasAttribute("open")) {
+    if (d.showModal) d.showModal();
+    else d.setAttribute("open", "");
+  }
+  $("#dlg-body").scrollTop = 0;
   const primero = $("#dlg-body").querySelector("input, textarea, select");
   if (primero) primero.focus();
 }
 
+/* El panel sale por donde entró. La animación es de CSS; aquí solo se espera
+   a que termine antes de cerrar de verdad. */
+const DURACION_PANEL = 220;
+let cierrePendiente = 0;
+const sinMovimiento = () =>
+  typeof window.matchMedia === "function" &&
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 function cerrarDialogo() {
   const d = $("#dlg");
-  if (d.close) d.close();
-  else d.removeAttribute("open");
   ui.onSubmit = null;
+  if (!d.hasAttribute("open")) return;
+  const terminar = () => {
+    d.classList.remove("closing");
+    if (d.close) d.close();
+    else d.removeAttribute("open");
+  };
+  clearTimeout(cierrePendiente);
+  if (sinMovimiento()) return terminar();
+  d.classList.add("closing");
+  cierrePendiente = setTimeout(terminar, DURACION_PANEL);
 }
 
 function campoFormulario(key, f, valor) {
@@ -511,15 +538,85 @@ const LISTAS = {
     ],
     claves: () => ["categoria", "texto"],
   },
+  papers: {
+    key: "papers",
+    titulo: "Papers y trabajos relacionados",
+    boton: "Nuevo paper",
+    buscar: "Buscar por título, autor o contenido",
+    intro:
+      "Los papers, TFG y tesis que se estudian para el trabajo: por qué interesa cada uno, qué aporta y qué se va a usar de él. Es la base del estado del arte.",
+    vacia:
+      "Aún no hay papers. Añade cada uno en cuanto lo encuentres, aunque no lo hayas leído, y apunta por qué te interesa.",
+    select: {
+      campo: "estado",
+      todas: "Todos los estados",
+      opts: ESTADOS_LECTURA,
+    },
+    checks: [
+      {
+        id: "alta",
+        l: "Solo relevancia alta",
+        test: (it) => it.relevancia === "alta",
+      },
+      { id: "sinInteres", l: "Falta el porqué", test: paperSinInteres },
+    ],
+    orden: ordenPapers,
+    marca: (it) => it.tipo || "Paper",
+    meta: (it) =>
+      [str(it.autores), str(it.anio), str(it.publicacion)]
+        .filter(Boolean)
+        .join(" · ") || "Sin autores",
+    chips: (it) => {
+      const estado = estadoPaper(it);
+      const clase = { leyendo: "now", leido: "ok" }[estado] || "";
+      return [
+        paperSinInteres(it) && chip("Falta el porqué", "warn"),
+        it.relevancia === "alta" && chip("Relevancia alta", "now"),
+        chip(optLabel(ESTADOS_LECTURA, estado), clase),
+      ];
+    },
+    claves: () => [
+      "interes",
+      "aporta",
+      "metodo",
+      "resultados",
+      "limitaciones",
+      "uso",
+      "seccion",
+      "url",
+      "cita",
+      "notas",
+      "relevancia",
+    ],
+    extra: (it) => {
+      const paso = {
+        "por-leer": { a: "leyendo", l: "Empezar a leer" },
+        leyendo: { a: "leido", l: "Marcar como leído" },
+      }[estadoPaper(it)];
+      return (
+        paso &&
+        el("button", {
+          type: "button",
+          class: "btn",
+          text: paso.l,
+          onclick: () =>
+            guardar(
+              () => store.update("papers", it.id, { estado: paso.a }),
+              "Estado actualizado."
+            ),
+        })
+      );
+    },
+  },
   fuentes: {
     key: "fuentes",
-    titulo: "Fuentes",
-    boton: "Nueva fuente",
-    buscar: "Buscar en las fuentes",
+    titulo: "Recursos",
+    boton: "Nuevo recurso",
+    buscar: "Buscar en los recursos",
     intro:
-      "Artículos, libros, documentación y herramientas, con la parte de la memoria donde se usan.",
+      "Documentación, herramientas, normativa y todo lo que no es un paper, con la parte de la memoria donde se usa.",
     vacia:
-      "Aún no hay fuentes. Guarda cada una con su referencia completa: te ahorra rehacer la bibliografía al final.",
+      "Aún no hay recursos. Guarda aquí la documentación de las herramientas y la normativa de tu centro.",
     select: { campo: "tipo", todas: "Todos los tipos", opts: TIPOS_FUENTE },
     checks: [{ id: "porLeer", l: "Solo por leer", test: (it) => !it.leida }],
     orden: (a, b) => str(a.titulo).localeCompare(str(b.titulo), "es"),
@@ -1258,6 +1355,16 @@ function vistaResumen() {
           href: "#tareas",
         },
         {
+          n: store.list("papers").filter(paperPorLeer).length,
+          l: "papers por leer",
+          href: "#papers",
+          go: () => {
+            const f = filtro("papers");
+            f.sel = "por-leer";
+            f.checks.clear();
+          },
+        },
+        {
           n: store.list("reuniones").filter(reunionPendiente).length,
           l: "reuniones con acciones pendientes",
           href: "#reuniones",
@@ -1401,6 +1508,7 @@ function renderTabs() {
           decisiones: store
             .list("decisiones")
             .filter((x) => decSinMotivo(x) || decSinComunicar(x)).length,
+          papers: store.list("papers").filter(paperSinInteres).length,
           "uso-ia": store.list("ia").filter(iaSinRevisar).length,
           reuniones: store.list("reuniones").filter(reunionPendiente).length,
         }
@@ -1497,6 +1605,17 @@ $("#dlg-form").addEventListener("submit", async (ev) => {
   if (ok) cerrarDialogo();
 });
 $("#dlg-cancel").addEventListener("click", cerrarDialogo);
+$("#dlg-close").addEventListener("click", cerrarDialogo);
+// Pulsar fuera del panel (en el fondo oscurecido) lo cierra. El clic en el
+// fondo llega con el propio <dialog> como destino.
+$("#dlg").addEventListener("click", (ev) => {
+  if (ev.target === ev.currentTarget) cerrarDialogo();
+});
+// Escape cierra con la misma animación en vez de desaparecer de golpe.
+$("#dlg").addEventListener("cancel", (ev) => {
+  ev.preventDefault();
+  cerrarDialogo();
+});
 window.addEventListener("hashchange", renderView);
 store.subscribe(() => {
   renderTabs();

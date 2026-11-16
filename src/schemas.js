@@ -59,12 +59,34 @@ export const CATEGORIAS_DIARIO = [
   "Otro",
 ];
 
-export const TIPOS_FUENTE = [
-  "Artículo",
+export const TIPOS_PAPER = [
+  "Paper",
+  "TFG",
+  "TFM",
+  "Tesis",
   "Libro",
+  "Informe",
+  "Otro",
+];
+
+export const ESTADOS_LECTURA = [
+  { v: "por-leer", l: "Por leer" },
+  { v: "leyendo", l: "Leyendo" },
+  { v: "leido", l: "Leído" },
+  { v: "descartado", l: "Descartado" },
+];
+
+export const RELEVANCIA = [
+  { v: "alta", l: "Alta" },
+  { v: "media", l: "Media" },
+  { v: "baja", l: "Baja" },
+];
+
+export const TIPOS_FUENTE = [
   "Documentación",
   "Web",
   "Herramienta",
+  "Libro",
   "Vídeo",
   "Normativa",
   "Otro",
@@ -246,8 +268,104 @@ export const SCHEMAS = {
       { k: "texto", l: "Qué pasó", t: "area", rows: 6 },
     ],
   },
+  /* Papers, TFG y tesis que se estudian para el trabajo. Los campos siguen el
+     orden en que uno se hace las preguntas: primero por qué merece la pena
+     leerlo, después qué dice, y al final qué se va a hacer con él. */
+  papers: {
+    nuevo: "Nuevo paper",
+    fields: [
+      { k: "titulo", l: "Título", t: "text", req: true },
+      { k: "tipo", l: "Tipo", t: "select", opts: TIPOS_PAPER, def: "Paper" },
+      { k: "autores", l: "Autores", t: "text" },
+      { k: "anio", l: "Año", t: "text", opt: true },
+      {
+        k: "publicacion",
+        l: "Dónde se publicó",
+        t: "text",
+        opt: true,
+        hint: "Revista, congreso o universidad.",
+      },
+      { k: "url", l: "Enlace", t: "url", opt: true },
+      {
+        k: "estado",
+        l: "Estado de lectura",
+        t: "select",
+        opts: ESTADOS_LECTURA,
+        def: "por-leer",
+      },
+      {
+        k: "relevancia",
+        l: "Relevancia para el trabajo",
+        t: "select",
+        opts: RELEVANCIA,
+        def: "media",
+      },
+      {
+        k: "interes",
+        l: "Por qué nos interesa",
+        t: "area",
+        rows: 3,
+        hint: "Qué pregunta del trabajo ayuda a responder. Escríbelo antes de leerlo: es lo que justifica dedicarle tiempo.",
+      },
+      {
+        k: "aporta",
+        l: "Qué aporta",
+        t: "area",
+        rows: 4,
+        opt: true,
+        hint: "La idea central y las contribuciones, con tus palabras.",
+      },
+      {
+        k: "metodo",
+        l: "Método y datos",
+        t: "area",
+        rows: 3,
+        opt: true,
+        hint: "Cómo lo hacen: técnica, modelo, conjunto de datos, evaluación.",
+      },
+      { k: "resultados", l: "Resultados", t: "area", rows: 3, opt: true },
+      {
+        k: "limitaciones",
+        l: "Limitaciones y críticas",
+        t: "area",
+        rows: 3,
+        opt: true,
+        hint: "Lo que no resuelve o lo que no te convence. Suele ser el hueco donde encaja tu trabajo.",
+      },
+      {
+        k: "uso",
+        l: "Qué vamos a usar de él",
+        t: "area",
+        rows: 3,
+        opt: true,
+        hint: "Una técnica que reutilizar, una línea base con la que compararse, una métrica, una idea que descartar.",
+      },
+      {
+        k: "seccion",
+        l: "Dónde se cita en la memoria",
+        t: "text",
+        opt: true,
+        hint: "Capítulo o apartado.",
+      },
+      {
+        k: "cita",
+        l: "Referencia bibliográfica",
+        t: "area",
+        rows: 2,
+        opt: true,
+        hint: "Tal como irá en la bibliografía.",
+      },
+      {
+        k: "notas",
+        l: "Notas y citas literales",
+        t: "area",
+        rows: 4,
+        opt: true,
+      },
+    ],
+  },
   fuentes: {
-    nuevo: "Nueva fuente",
+    nuevo: "Nuevo recurso",
     fields: [
       { k: "titulo", l: "Título", t: "text", req: true },
       {
@@ -255,7 +373,7 @@ export const SCHEMAS = {
         l: "Tipo",
         t: "select",
         opts: TIPOS_FUENTE,
-        def: "Artículo",
+        def: "Documentación",
       },
       { k: "url", l: "Enlace", t: "url", opt: true },
       {
@@ -339,11 +457,12 @@ export const COLLECTIONS = Object.keys(SCHEMAS);
 export const VIEWS = [
   { id: "resumen", l: "Resumen" },
   { id: "tareas", l: "Tareas" },
+  { id: "papers", l: "Papers" },
   { id: "decisiones", l: "Decisiones" },
   { id: "uso-ia", l: "Uso de IA" },
   { id: "reuniones", l: "Reuniones" },
   { id: "diario", l: "Diario" },
-  { id: "fuentes", l: "Fuentes" },
+  { id: "fuentes", l: "Recursos" },
   { id: "calendario", l: "Calendario" },
 ];
 

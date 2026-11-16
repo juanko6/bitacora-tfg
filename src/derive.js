@@ -122,6 +122,27 @@ export const decSinComunicar = (it) => (it.comunicada || "no") === "no";
 export const tareaAbierta = (it) => (it.estado || "pendiente") !== "hecho";
 export const reunionPendiente = (it) =>
   (it.estado || "pendiente") === "pendiente" && !!str(it.acciones);
+export const estadoPaper = (it) => it.estado || "por-leer";
+export const paperPorLeer = (it) => estadoPaper(it) === "por-leer";
+/* Un paper sin su porqué es una lectura sin justificar. A los descartados no
+   se les pide: ya se decidió no dedicarles tiempo. */
+export const paperSinInteres = (it) =>
+  !str(it.interes) && estadoPaper(it) !== "descartado";
+
+const ORDEN_LECTURA = ["leyendo", "por-leer", "leido", "descartado"];
+const ORDEN_RELEVANCIA = ["alta", "media", "baja"];
+const posicion = (lista, v) => {
+  const i = lista.indexOf(v);
+  return i < 0 ? lista.length : i;
+};
+/* Primero lo que se está leyendo, luego lo pendiente, y dentro de cada grupo
+   lo más relevante. */
+export const ordenPapers = (a, b) =>
+  posicion(ORDEN_LECTURA, estadoPaper(a)) -
+    posicion(ORDEN_LECTURA, estadoPaper(b)) ||
+  posicion(ORDEN_RELEVANCIA, a.relevancia) -
+    posicion(ORDEN_RELEVANCIA, b.relevancia) ||
+  str(a.titulo).localeCompare(str(b.titulo), "es");
 
 /* Markdown de una colección, con el mismo aspecto que una bitácora escrita a
    mano: un título por entrada y una línea por campo. */

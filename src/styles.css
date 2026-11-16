@@ -1,54 +1,37 @@
 /* Una columna de listas densas que se despliegan, bajo una banda de cabecera.
+   Los formularios se abren en un panel que entra desde la derecha.
+
+   El tema es oscuro siempre, sin depender de cómo esté el sistema: una
+   bitácora se consulta a ratos y de noche, y así se ve igual en todas partes.
+
    Para adaptar la plantilla a tu centro basta con cambiar --band y --accent:
    el azul de serie es el de la portada de Ingeniería Informática de la EPS de
    la Universidad de Alicante. */
 :root {
-  --bg: #f3f6fa;
-  --surface: #ffffff;
-  --surface-2: #e9eef5;
-  --fg: #14202c;
-  --muted: #566575;
-  --line: #d3dbe5;
-  --accent: #0064cf;
-  --accent-fg: #ffffff;
-  --accent-soft: #deecff;
-  --band: #0064cf;
+  --bg: #0d141c;
+  --surface: #151e29;
+  --surface-2: #1e2a37;
+  --fg: #e6edf4;
+  --muted: #93a2b3;
+  --line: #2a3847;
+  --accent: #5aa8ff;
+  --accent-fg: #05121f;
+  --accent-soft: #123152;
+  --band: #0b4c99;
   --band-fg: #ffffff;
-  --band-muted: #d5e6ff;
-  --warn: #8a5200;
-  --warn-soft: #ffefd0;
-  --ok: #13694a;
-  --ok-soft: #d9f2e5;
-  --crit: #b0241c;
-  --crit-soft: #fbe2df;
+  --band-muted: #c3dbfa;
+  --warn: #f2bb5e;
+  --warn-soft: #3a2c0f;
+  --ok: #72d4a3;
+  --ok-soft: #11321f;
+  --crit: #ff8f86;
+  --crit-soft: #3f1916;
   --font-display: "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
   --font-body: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono:
     "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  color-scheme: light;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0d141c;
-    --surface: #151e29;
-    --surface-2: #1e2a37;
-    --fg: #e6edf4;
-    --muted: #93a2b3;
-    --line: #2a3847;
-    --accent: #5aa8ff;
-    --accent-fg: #05121f;
-    --accent-soft: #123152;
-    --band: #0b4c99;
-    --band-fg: #ffffff;
-    --band-muted: #c3dbfa;
-    --warn: #f2bb5e;
-    --warn-soft: #3a2c0f;
-    --ok: #72d4a3;
-    --ok-soft: #11321f;
-    --crit: #ff8f86;
-    --crit-soft: #3f1916;
-    color-scheme: dark;
-  }
+  --panel-time: 220ms;
+  color-scheme: dark;
 }
 
 * {
@@ -675,40 +658,115 @@ details.norma ul {
   max-width: 72ch;
 }
 
-/* diálogo */
+/* panel lateral: los formularios entran desde la derecha y ocupan toda la
+   altura, así un formulario largo se recorre sin perder de vista la lista. */
 dialog {
-  width: min(660px, calc(100vw - 32px));
-  max-height: calc(100vh - 32px);
+  position: fixed;
+  inset: 0 0 0 auto;
+  margin: 0;
+  width: min(600px, 100vw);
+  height: 100vh;
+  height: 100dvh;
+  max-width: 100vw;
+  max-height: none;
   padding: 0;
-  border: 1px solid var(--line);
-  border-radius: 12px;
+  border: 0;
+  border-left: 1px solid var(--line);
   background: var(--surface);
   color: var(--fg);
+  box-shadow: -18px 0 48px rgba(0, 0, 0, 0.45);
+}
+dialog[open] {
+  animation: panel-entra var(--panel-time) cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+dialog[open].closing {
+  animation: panel-sale var(--panel-time) cubic-bezier(0.4, 0, 1, 1) forwards;
 }
 dialog::backdrop {
-  background: rgba(8, 14, 22, 0.55);
+  background: rgba(4, 8, 13, 0.6);
+  animation: fondo-entra var(--panel-time) ease-out;
+}
+dialog.closing::backdrop {
+  animation: fondo-sale var(--panel-time) ease-in forwards;
+}
+@keyframes panel-entra {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes panel-sale {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes fondo-entra {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes fondo-sale {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 .dlg {
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 34px);
+  height: 100%;
 }
 .dlg-head {
-  padding: 16px 20px 12px;
+  padding: 18px 22px 14px;
+  padding-top: calc(18px + env(safe-area-inset-top, 0px));
   border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.dlg-close {
+  font: inherit;
+  font-size: 22px;
+  line-height: 1;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.dlg-close:hover {
+  background: var(--surface-2);
+  color: var(--fg);
 }
 .dlg-head h2 {
   font-size: 18px;
 }
 .dlg-body {
-  padding: 16px 20px;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 18px 22px 24px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 .dlg-foot {
-  padding: 12px 20px 16px;
+  padding: 12px 22px 16px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid var(--line);
   display: flex;
   gap: 10px;

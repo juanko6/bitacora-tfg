@@ -232,18 +232,102 @@ export function DEMO(base = new Date()) {
       },
     },
 
-    fuentes: {
-      f1: {
-        titulo: "Deep learning for plant disease detection: a survey",
-        tipo: "Artículo",
-        url: "https://example.org/articulo-de-ejemplo",
-        seccion: "Capítulo 2 · Estado del arte",
+    // Referencias inventadas: ni los títulos ni los autores existen.
+    papers: {
+      p1: {
+        titulo:
+          "Detección de plagas en hojas con redes convolucionales ligeras",
+        tipo: "Paper",
+        autores: "N. Apellido, M. Otro",
+        anio: "2024",
+        publicacion: "Revista de Ejemplo de Visión Artificial",
+        url: "https://example.org/paper-de-ejemplo",
+        estado: "leido",
+        relevancia: "alta",
+        interes:
+          "Es el trabajo más cercano al nuestro: detecta plagas en hojas con un modelo pensado para móvil. Sirve para saber qué precisión es razonable esperar.",
+        aporta:
+          "Propone podar el detector hasta un tercio de su tamaño perdiendo dos puntos de precisión, y publica su conjunto de datos.",
+        metodo:
+          "Detector de una etapa, podado y cuantizado. 3.000 imágenes de laboratorio, cuatro clases. Evalúa con mAP y tiempo de inferencia en dos móviles.",
+        resultados:
+          "mAP de 0,84 con 38 ms por imagen en un móvil de gama media.",
+        limitaciones:
+          "Las fotos son de laboratorio, con fondo uniforme. No prueba en campo ni con poca luz, que es justo nuestro caso.",
+        uso: "Su modelo podado como línea base, y la misma pareja de métricas (mAP y tiempo de inferencia) para poder compararnos.",
+        seccion: "Capítulo 2 · Estado del arte; capítulo 5 · Resultados",
         cita: "APELLIDO, N. y OTRO, M., 2024. Título del artículo de ejemplo. Revista de Ejemplo, 12(3), 45-67.",
         notas:
-          "Buena clasificación de métodos. La tabla 3 sirve para situar el trabajo.",
-        leida: true,
+          "La tabla 3 compara seis detectores: útil para situar el nuestro.",
         creado,
       },
+      p2: {
+        titulo:
+          "Aplicación móvil para el diagnóstico de enfermedades del olivo",
+        tipo: "TFG",
+        autores: "C. Estudiante Ficticia",
+        anio: "2025",
+        publicacion: "Universidad de Ejemplo",
+        url: "https://example.org/tfg-de-ejemplo",
+        estado: "leyendo",
+        relevancia: "media",
+        interes:
+          "Un TFG reciente de la misma titulación sobre un problema parecido: enseña qué estructura de memoria y qué nivel de detalle se espera.",
+        aporta: "",
+        metodo:
+          "Clasificador de imágenes servido desde una API, con aplicación móvil como cliente.",
+        resultados: "",
+        limitaciones: "",
+        uso: "La estructura del capítulo de evaluación y la forma de presentar el análisis de costes.",
+        seccion: "Capítulo 2 · Estado del arte",
+        cita: "",
+        notas: "",
+        creado,
+      },
+      p3: {
+        titulo: "Aumento de datos para imágenes agrícolas tomadas en campo",
+        tipo: "Paper",
+        autores: "R. Inventado, S. Supuesta, T. Ejemplar",
+        anio: "2023",
+        publicacion: "Congreso de Ejemplo sobre Agricultura de Precisión",
+        url: "https://example.org/otro-paper",
+        estado: "por-leer",
+        relevancia: "alta",
+        interes:
+          "Puede justificar la decisión D-03 (aumento de datos con cambios de iluminación), que ahora no tiene motivo escrito.",
+        aporta: "",
+        metodo: "",
+        resultados: "",
+        limitaciones: "",
+        uso: "",
+        seccion: "",
+        cita: "",
+        notas: "",
+        creado,
+      },
+      p4: {
+        titulo: "Una revisión de la detección de objetos en tiempo real",
+        tipo: "Paper",
+        autores: "V. Imaginaria",
+        anio: "2022",
+        publicacion: "",
+        url: "",
+        estado: "por-leer",
+        relevancia: "media",
+        interes: "",
+        aporta: "",
+        metodo: "",
+        resultados: "",
+        limitaciones: "",
+        uso: "",
+        seccion: "",
+        cita: "",
+        notas: "Recomendado por el tutor en la última reunión.",
+        creado,
+      },
+    },
+
+    fuentes: {
       f2: {
         titulo: "Documentación de la biblioteca de detección",
         tipo: "Documentación",

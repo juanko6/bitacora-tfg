@@ -2,11 +2,16 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0b4c99" />
     <title>Bitácora de TFG</title>
     <meta
       name="description"
-      content="Bitácora para llevar un TFG, TFM o tesis: tareas, decisiones, uso de IA, reuniones, diario, fuentes y calendario."
+      content="Bitácora para llevar un TFG, TFM o tesis: tareas, papers, decisiones, uso de IA, reuniones, diario, recursos y calendario."
     />
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -33,7 +38,17 @@
 
     <dialog id="dlg" aria-labelledby="dlg-title">
       <form class="dlg" id="dlg-form" novalidate>
-        <div class="dlg-head"><h2 id="dlg-title"></h2></div>
+        <div class="dlg-head">
+          <h2 id="dlg-title"></h2>
+          <button
+            type="button"
+            class="dlg-close"
+            id="dlg-close"
+            aria-label="Cerrar"
+          >
+            ×
+          </button>
+        </div>
         <div class="dlg-body" id="dlg-body"></div>
         <div class="dlg-foot">
           <button type="button" class="btn" id="dlg-cancel">Cancelar</button>

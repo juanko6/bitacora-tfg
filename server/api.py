@@ -39,6 +39,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 # se rechaza: la API no es un almacén genérico.
 COLLECTIONS = (
     "tareas",
+    "papers",
     "decisiones",
     "ia",
     "reuniones",

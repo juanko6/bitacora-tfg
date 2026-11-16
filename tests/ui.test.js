@@ -52,14 +52,15 @@ describe("interfaz", () => {
     expect($$(".tab").map((t) => t.firstChild.textContent)).toEqual([
       "Resumen",
       "Tareas",
+      "Papers",
       "Decisiones",
       "Uso de IA",
       "Reuniones",
       "Diario",
-      "Fuentes",
+      "Recursos",
       "Calendario",
     ]);
-    expect($$(".tile")).toHaveLength(4);
+    expect($$(".tile")).toHaveLength(5);
     expect($$(".step.current .step-l")[0].textContent).toBe("Desarrollo");
   });
 
@@ -74,6 +75,68 @@ describe("interfaz", () => {
     expect(cifras["reuniones con acciones pendientes"]).toBe(1);
     expect(cifras["decisiones sin comunicar al tutor"]).toBe(1);
     expect(cifras["usos de IA con la revisión sin cerrar"]).toBe(1);
+    expect(cifras["papers por leer"]).toBe(2);
+  });
+
+  it("ordena los papers por estado y relevancia y señala los que no dicen por qué interesan", async () => {
+    await ir("papers");
+    expect(
+      $$(".row .row-title").map((t) => t.textContent.slice(0, 12))
+    ).toEqual(["Aplicación m", "Aumento de d", "Una revisión", "Detección de"]);
+    const sinPorque = $$(".row").filter((r) =>
+      r.querySelector(".chips").textContent.includes("Falta el porqué")
+    );
+    expect(sinPorque).toHaveLength(1);
+    expect($$(".tab")[2].querySelector(".badge").textContent).toBe("1");
+
+    $("#chk-papers-alta").click();
+    await espera();
+    expect($$(".row")).toHaveLength(2);
+    $("#chk-papers-alta").click();
+    await espera();
+  });
+
+  it("guarda un paper con su porqué y lo hace avanzar de estado", async () => {
+    boton("Nuevo paper").click();
+    await espera();
+    expect($("#dlg").hasAttribute("open")).toBe(true);
+    $("#f-papers-titulo").value = "Paper de prueba";
+    $("#f-papers-autores").value = "A. Prueba";
+    $("#f-papers-interes").value = "Responde a la pregunta principal.";
+    await enviar();
+    const [id, doc] = Object.entries(guardado().papers).find(
+      ([, p]) => p.titulo === "Paper de prueba"
+    );
+    expect(doc).toMatchObject({
+      tipo: "Paper",
+      estado: "por-leer",
+      relevancia: "media",
+      interes: "Responde a la pregunta principal.",
+    });
+
+    boton("Empezar a leer").click();
+    await espera(60);
+    expect(guardado().papers[id].estado).toBe("leyendo");
+    boton("Marcar como leído").click();
+    await espera(60);
+    expect(guardado().papers[id].estado).toBe("leido");
+  });
+
+  it("el panel se cierra con animación y se puede reabrir mientras tanto", async () => {
+    await espera(260);
+    expect($("#dlg").hasAttribute("open")).toBe(false);
+    boton("Nuevo paper").click();
+    await espera();
+    $("#dlg-close").click();
+    expect($("#dlg").classList.contains("closing")).toBe(true);
+    expect($("#dlg").hasAttribute("open")).toBe(true);
+    boton("Nuevo paper").click();
+    await espera(260);
+    expect($("#dlg").hasAttribute("open")).toBe(true);
+    expect($("#dlg").classList.contains("closing")).toBe(false);
+    boton("Cancelar").click();
+    await espera(260);
+    expect($("#dlg").hasAttribute("open")).toBe(false);
   });
 
   it("crea una decisión numerada, la edita y la quita en dos pasos", async () => {
