@@ -99,6 +99,20 @@ Para restaurar una copia, o para subir los datos que tenías en el navegador:
 
 **Sustituye todo lo que hay.** Pide confirmación y antes guarda una copia de lo que había.
 
+## Anotar desde la terminal
+
+Para crear o sustituir un documento sin abrir la página, por ejemplo desde un script o un asistente:
+
+```bash
+echo '{"titulo": "Probar el modelo", "estado": "pendiente", "tipo": "tarea"}' | ./deploy/put.sh tareas probar-modelo -
+```
+
+```bash
+./deploy/put.sh --delete tareas probar-modelo
+```
+
+Los campos de cada colección están en [`src/schemas.js`](../src/schemas.js). El documento sustituye entero al que hubiera con ese identificador.
+
 ## Dónde está cada cosa en el servidor
 
 ```
